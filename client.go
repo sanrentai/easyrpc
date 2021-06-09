@@ -75,14 +75,14 @@ func dialTimeout(f newClientFunc, network, address string, opts ...*Option) (cli
 // with a single Client, and a Client may be used by
 // multiple goroutines simultaneously.
 type Client struct {
-	cc       codec.Codec //消息的编解码器
+	cc       codec.Codec // 消息的编解码器，和服务端类似，用来序列化将要发送出去的请求，以及反序列化接收到的响应。
 	opt      *Option
-	sending  sync.Mutex       // 保证请求的有序发送
-	header   codec.Header     //请求的消息头
+	sending  sync.Mutex       // 是一个互斥锁，和服务端类似，为了保证请求的有序发送，即防止出现多个请求报文混淆。
+	header   codec.Header     // 是每个请求的消息头，header 只有在请求发送时才需要，而请求发送是互斥的，因此每个客户端只需要一个，声明在 Client 结构体中可以复用。
 	mu       sync.Mutex       // protect following
-	seq      uint64           //请求编号
-	pending  map[uint64]*Call //存储未处理完的请求,键是编号，值是 Call 实例
-	closing  bool             // 用户主动关闭
+	seq      uint64           // 用于给发送的请求编号，每个请求拥有唯一编号。
+	pending  map[uint64]*Call // 存储未处理完的请求,键是编号，值是 Call 实例
+	closing  bool             // 用户主动关闭的，即调用 Close 方法
 	shutdown bool             // server has told us to stop 一般是有错误发生
 }
 

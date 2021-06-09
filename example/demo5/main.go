@@ -11,7 +11,7 @@ import (
 	"github.com/sanrentai/easyrpc"
 )
 
-type Foo int
+type Foo struct{}
 
 type Args struct{ Num1, Num2 int }
 

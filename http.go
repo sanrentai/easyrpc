@@ -9,7 +9,7 @@ import (
 const (
 	connected        = "200 Connected to Easy RPC"
 	defaultRPCPath   = "/_easyrpc_"
-	defaultDebugPath = "/debug/geerpc"
+	defaultDebugPath = "/debug/easyrpc"
 )
 
 // ServeHTTP implements an http.Handler that answers RPC requests.

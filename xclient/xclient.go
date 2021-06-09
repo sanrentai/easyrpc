@@ -9,6 +9,7 @@ import (
 	. "github.com/sanrentai/easyrpc"
 )
 
+// 支持负载均衡的客户端
 type XClient struct {
 	d       Discovery
 	mode    SelectMode
@@ -73,6 +74,7 @@ func (xc *XClient) Call(ctx context.Context, serviceMethod string, args, reply i
 	return xc.call(rpcAddr, ctx, serviceMethod, args, reply)
 }
 
+// Broadcast 将请求广播到所有的服务实例，如果任意一个实例发生错误，则返回其中一个错误；如果调用成功，则返回其中一个的结果
 // Broadcast invokes the named function for every server registered in discovery
 func (xc *XClient) Broadcast(ctx context.Context, serviceMethod string, args, reply interface{}) error {
 	servers, err := xc.d.GetAll()

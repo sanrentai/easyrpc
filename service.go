@@ -8,8 +8,8 @@ import (
 )
 
 type methodType struct {
-	method    reflect.Method //方法本身
-	ArgType   reflect.Type   //第一个参数的类型
+	method    reflect.Method // 方法本身
+	ArgType   reflect.Type   // 第一个参数的类型
 	ReplyType reflect.Type   // 第二个参数的类型
 	numCalls  uint64         // 后续统计方法调用次数时会用到
 }
@@ -62,15 +62,19 @@ func newService(rcvr interface{}) *service {
 
 func (s *service) registerMethods() {
 	s.method = make(map[string]*methodType)
+	// 遍历方法
 	for i := 0; i < s.typ.NumMethod(); i++ {
 		method := s.typ.Method(i)
 		mType := method.Type
+		// 三个入参，1个出参
 		if mType.NumIn() != 3 || mType.NumOut() != 1 {
 			continue
 		}
+		// 判断是不是返回err
 		if mType.Out(0) != reflect.TypeOf((*error)(nil)).Elem() {
 			continue
 		}
+		// 请求参数，返回参数
 		argType, replyType := mType.In(1), mType.In(2)
 		if !isExportedOrBuiltinType(argType) || !isExportedOrBuiltinType(replyType) {
 			continue

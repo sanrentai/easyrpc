@@ -8,8 +8,8 @@ import (
 )
 
 type GobCodec struct {
-	conn io.ReadWriteCloser
-	buf  *bufio.Writer
+	conn io.ReadWriteCloser // 由构建函数传入，通常是通过 TCP 或者 Unix 建立 socket 时得到的链接实例
+	buf  *bufio.Writer      // 是为了防止阻塞而创建的带缓冲的 Writer，一般这么做能提升性能
 	dec  *gob.Decoder
 	enc  *gob.Encoder
 }

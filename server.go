@@ -143,6 +143,7 @@ func (server *Server) readRequestHeader(cc codec.Codec) (*codec.Header, error) {
 	return &h, nil
 }
 
+// 读取请求数据
 func (server *Server) readRequest(cc codec.Codec) (*request, error) {
 	h, err := server.readRequestHeader(cc)
 	if err != nil {
@@ -169,6 +170,7 @@ func (server *Server) readRequest(cc codec.Codec) (*request, error) {
 	return req, nil
 }
 
+// 发送返回
 func (server *Server) sendResponse(cc codec.Codec, h *codec.Header, body interface{}, sending *sync.Mutex) {
 	sending.Lock()
 	defer sending.Unlock()
@@ -177,10 +179,12 @@ func (server *Server) sendResponse(cc codec.Codec, h *codec.Header, body interfa
 	}
 }
 
+// 处理请求
 func (server *Server) handleRequest(cc codec.Codec, req *request, sending *sync.Mutex, wg *sync.WaitGroup, timeout time.Duration) {
 	defer wg.Done()
 	called := make(chan struct{})
 	sent := make(chan struct{})
+	// 异步调用
 	go func() {
 		err := req.svc.call(req.mtype, req.argv, req.replyv)
 		called <- struct{}{}

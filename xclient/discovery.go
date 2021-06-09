@@ -28,14 +28,14 @@ type MultiServersDiscovery struct {
 	r       *rand.Rand   // generate random number
 	mu      sync.RWMutex // protect following
 	servers []string
-	index   int // record the selected position for robin algorithm
+	index   int // record the selected position for robin algorithm 记录 Round Robin 算法已经轮询到的位置，为了避免每次从 0 开始，初始化时随机设定一个值。
 }
 
 // NewMultiServerDiscovery creates a MultiServersDiscovery instance
 func NewMultiServerDiscovery(servers []string) *MultiServersDiscovery {
 	d := &MultiServersDiscovery{
 		servers: servers,
-		r:       rand.New(rand.NewSource(time.Now().UnixNano())),
+		r:       rand.New(rand.NewSource(time.Now().UnixNano())), // 一个产生随机数的实例，初始化时使用时间戳设定随机数种子，避免每次产生相同的随机数序列。
 	}
 	d.index = d.r.Intn(math.MaxInt32 - 1)
 	return d
